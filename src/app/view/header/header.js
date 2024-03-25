@@ -1,35 +1,22 @@
 import './header.css';
-import ElementCreator from '../../util/element-creator';
+import View from '../view';
 
 const cssClasses = {
   HEADER: 'header',
   NAV: 'nav',
 };
 
-export default class HeaderView {
+export default class HeaderView extends View {
   constructor() {
-    this.elementCreator = this.createView();
-  }
-  /**
-  * @returns {HTMLElement}
-   */
-
-  getHtmlElement() {
-    return this.elementCreator.getElement();
-  }
-
-  /**
-  * @returns {ElementCreator}
-   */
-
-  createView() {
+    /**
+     * @type {import('../../util/element-creator').ElementParams}
+     */
     const params = {
       tag: 'header',
       classNames: [cssClasses.HEADER],
       textContent: '',
       callback: null,
     };
-    const elementCreator = new ElementCreator(params);
-    return elementCreator;
+    super(params);
   }
 }
