@@ -1,33 +1,21 @@
 import './footer.css';
-import ElementCreator from '../../util/element-creator';
+import View from '../view';
 
 const cssClasses = {
   FOOTER: 'footer',
 };
 const TEXT = 'SPA example app';
-export default class FooterView {
+export default class FooterView extends View {
   constructor() {
-    this.elementCreator = this.createView();
-  }
-  /**
-  * @returns {HTMLElement}
-   */
-
-  getHtmlElement() {
-    return this.elementCreator.getElement();
-  }
-
-  /**
-  * @returns {ElementCreator}
-   */
-  createView() {
+    /**
+    * @type {import('../../util/element-creator').ElementParams}
+    */
     const params = {
       tag: 'footer',
       classNames: [cssClasses.FOOTER],
       textContent: TEXT,
       callback: null,
     };
-    const elementCreator = new ElementCreator(params);
-    return elementCreator;
+    super(params);
   }
 }
