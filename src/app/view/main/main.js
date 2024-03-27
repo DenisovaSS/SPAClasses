@@ -19,4 +19,17 @@ export default class MainView extends View {
     };
     super(params);
   }
+
+  /**
+   *
+   * @param {View} view
+   */
+  setContent(view) {
+    const element = view.getHtmlElement();
+    const currentElement = this.elementCreator.getElement();
+    while (currentElement.firstElementChild) {
+      currentElement.firstElementChild.remove();
+    }
+    currentElement.append(element);
+  }
 }
