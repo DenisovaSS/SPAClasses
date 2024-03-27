@@ -14,11 +14,15 @@ export default class InputFieldCreator extends ElementCreator {
   createElement(param) {
     this.element = document.createElement('div');
     this.setCssClasses([InputFieldCssClasses.CONTAINER]);
-    this.setCssClasses(param.classNames);
+    param.classNames.forEach((name) => {
+      this.element.classList.add(name);
+    });
+
     this.setCallback(param.callback);
     this.inputElement = document.createElement('input');
     this.labelElement = document.createElement('label');
     this.setTextContent(param.textContent);
+    this.element.append(this.labelElement, this.inputElement);
   }
 
   /**
