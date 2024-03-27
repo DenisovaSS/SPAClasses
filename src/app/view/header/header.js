@@ -1,60 +1,95 @@
 import './header.css';
 import View from '../view';
+import IndexView from '../main/index/indexM';
+import ProductView from '../main/product/product';
 import ElementCreator from '../../util/element-creator';
 import LinkView from './link/link-view';
 
-const cssClasses = {
+const CssClasses = {
   HEADER: 'header',
   NAV: 'nav',
+  // ITEM: 'nav-item',
+  // ITEM_SELECTED: 'nav-item__selected',
 };
 const NamePages = {
   INDEX: 'Главная',
   PRODUCT: 'Карточки',
 };
 const START_PAGE_INDEX = 0;
+
+/**
+ * @typedef {{ name: string, callback: function }} Page
+ */
+
 export default class HeaderView extends View {
-  constructor() {
-    /**
-     * @type {import('../../util/element-creator').ElementParams}
+  /**
+     * @param {import('../main/main-view').default} mainComponent
      */
+  constructor(mainComponent) {
+    /**
+         * @type {import('../view').ViewParams}
+         */
     const params = {
       tag: 'header',
-      classNames: [cssClasses.HEADER],
-      textContent: '',
-      callback: null,
+      classNames: [CssClasses.HEADER],
     };
     super(params);
-
-    this.linkElements = [];
-    this.configureView();
+    this.headerLinkElements = [];
+    this.configureView(mainComponent);
   }
 
-  configureView() {
-    const paramsNav = {
+  /**
+     * @param {import('../main/main').default} mainComponent
+     */
+  configureView(mainComponent) {
+    /**
+         * @type {import('../../util/element-creator').ElementParams}
+         */
+    const navParams = {
       tag: 'nav',
-      classNames: [cssClasses.NAV],
+      classNames: [CssClasses.NAV],
       textContent: '',
       callback: null,
     };
-    const creatorNav = new ElementCreator(paramsNav);
+    const creatorNav = new ElementCreator(navParams);
     this.elementCreator.addInnerElement(creatorNav);
+
+    const pages = this.getPages(mainComponent);
+
+    pages.forEach((page, index) => {
+      const linkElement = new LinkView(page, this.headerLinkElements);
+
+      creatorNav.addInnerElement(linkElement.getHtmlElement());
+      if (index === START_PAGE_INDEX) {
+        page.callback();
+        linkElement.setSelectedStatus();
+      }
+
+      this.headerLinkElements.push(linkElement);
+    });
+
+    this.elementCreator.addInnerElement(creatorNav);
+  }
+
+  /**
+     * @param {import('../main/main-view').default} mainComponent
+     * @returns {Array<Page>}
+     */
+  getPages(mainComponent) {
+    const indexView = new IndexView();
+    const productView = new ProductView();
+
     const pages = [
       {
         name: NamePages.INDEX,
-        callback: () => {},
+        callback: () => mainComponent.setContent(indexView),
       },
       {
         name: NamePages.PRODUCT,
-        callback: () => {},
+        callback: () => mainComponent.setContent(productView),
       },
     ];
-    pages.forEach((item, index) => {
-      const linkElement = new LinkView(item.name, this.linkElements);
-      creatorNav.addInnerElement(linkElement.getHtmlElement());
-      this.linkElements.push(linkElement);
-      if (index === START_PAGE_INDEX) {
-        linkElement.setSelectedStatus();
-      }
-    });
+
+    return pages;
   }
 }

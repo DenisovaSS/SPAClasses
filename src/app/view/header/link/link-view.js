@@ -10,12 +10,12 @@ export default class LinkView extends View {
      * @param {import('../header').Page} pageParam
      * @param {Array<LinkView>} linkElements
      */
-  constructor(text, linkElements) {
+  constructor(pageParam, linkElements) {
     const params = {
       tag: 'a',
       classNames: [cssClasses.ITEM],
-      textContent: text,
-      callback: null,
+      textContent: pageParam.name,
+      callback: pageParam.callback,
     };
     super(params);
     this.linkElements = linkElements;
@@ -34,7 +34,13 @@ export default class LinkView extends View {
     element.classList.remove(cssClasses.ITEM_SELECTED);
   }
 
+  /**
+   * @param {import('../header').Page} pageParam
+   */
   configureView() {
+    // this.elementCreator.setTextContent(pageParam.name);
+    // this.elementCreator.setCallback(pageParam.callback);
+
     const element = this.elementCreator.getElement();
     element.addEventListener('click', this.setSelectedStatus.bind(this));
   }
