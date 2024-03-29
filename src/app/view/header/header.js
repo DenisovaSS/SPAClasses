@@ -1,9 +1,8 @@
 import './header.css';
 import View from '../view';
-import IndexView from '../main/index/indexM';
-import ProductView from '../main/product/product';
 import ElementCreator from '../../util/element-creator';
 import LinkView from './link/link-view';
+import { Pages } from '../../router/pages';
 
 const CssClasses = {
   HEADER: 'header',
@@ -15,7 +14,6 @@ const NamePages = {
   INDEX: 'Главная',
   PRODUCT: 'Карточки',
 };
-const START_PAGE_INDEX = 0;
 
 /**
  * @typedef {{ name: string, callback: function }} Page
@@ -23,9 +21,9 @@ const START_PAGE_INDEX = 0;
 
 export default class HeaderView extends View {
   /**
-     * @param {import('../main/main-view').default} mainComponent
+     * @param {import('../../router/router').default} router
      */
-  constructor(mainComponent) {
+  constructor(router) {
     /**
          * @type {import('../view').ViewParams}
          */
@@ -34,14 +32,14 @@ export default class HeaderView extends View {
       classNames: [CssClasses.HEADER],
     };
     super(params);
-    this.headerLinkElements = [];
-    this.configureView(mainComponent);
+    this.headerLinkElements = new Map();
+    this.configureView(router);
   }
 
   /**
-     * @param {import('../main/main').default} mainComponent
+     * @param {import('../../router/router').default} router
      */
-  configureView(mainComponent) {
+  configureView(router) {
     /**
          * @type {import('../../util/element-creator').ElementParams}
          */
@@ -54,42 +52,27 @@ export default class HeaderView extends View {
     const creatorNav = new ElementCreator(navParams);
     this.elementCreator.addInnerElement(creatorNav);
 
-    const pages = this.getPages(mainComponent);
-
-    pages.forEach((page, index) => {
-      const linkElement = new LinkView(page, this.headerLinkElements);
-
+    Object.keys(NamePages).forEach((key) => {
+      const linkParams = {
+        name: NamePages[key],
+        callback: () => router.navigate(Pages[key]),
+      };
+      const linkElement = new LinkView(linkParams, this.headerLinkElements);
       creatorNav.addInnerElement(linkElement.getHtmlElement());
-      if (index === START_PAGE_INDEX) {
-        page.callback();
-        linkElement.setSelectedStatus();
-      }
-
-      this.headerLinkElements.push(linkElement);
+      this.headerLinkElements.set(Pages[key], linkElement);
     });
 
-    this.elementCreator.addInnerElement(creatorNav);
+    // this.elementCreator.addInnerElement(creatorNav);
   }
 
   /**
-     * @param {import('../main/main-view').default} mainComponent
-     * @returns {Array<Page>}
-     */
-  getPages(mainComponent) {
-    const indexView = new IndexView();
-    const productView = new ProductView();
-
-    const pages = [
-      {
-        name: NamePages.INDEX,
-        callback: () => mainComponent.setContent(indexView),
-      },
-      {
-        name: NamePages.PRODUCT,
-        callback: () => mainComponent.setContent(productView),
-      },
-    ];
-
-    return pages;
+ *
+ * @param {string} NamePage
+ */
+  setSelectedItem(NamePage) {
+    const linkComponent = this.headerLinkElements.get(NamePage);
+    if (linkComponent instanceof LinkView) {
+      linkComponent.setSelectedStatus();
+    }
   }
 }

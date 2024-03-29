@@ -10,13 +10,12 @@ const FIELD_TEXT_TWO = 'Поле для ввода 2';
 export default class IndexView extends View {
   constructor() {
     /**
-     * @type {import('../../../util/element-creator').ElementParams}
-     */
+         * @type {import('../../view').ViewParams}
+         */
     const params = {
       tag: 'section',
       classNames: [cssClasses.INDEXM],
-      textContent: '',
-      callback: null,
+
     };
     super(params);
 
