@@ -13,6 +13,7 @@ module.exports = {
   devtool,
   devServer: {
     open: true,
+    historyApiFallback:true
   },
   entry: path.resolve(__dirname, "src", "index.js"),
   output: {

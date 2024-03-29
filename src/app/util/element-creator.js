@@ -49,7 +49,7 @@ export default class ElementCreator {
    *  @param {Array<string>} cssClasses
    */
   setCssClasses(cssClasses) {
-    cssClasses.forEach((className) => this.element.classList.add(className));
+    cssClasses.map((className) => this.element.classList.add(className));
   }
 
   /**
