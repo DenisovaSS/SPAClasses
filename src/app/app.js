@@ -3,20 +3,26 @@ import FooterView from './view/footer/footer';
 import HeaderView from './view/header/header';
 import MainView from './view/main/main';
 import Router from './router/router';
-import { Pages } from './router/pages';
+import { Pages, ID_SELECTOR } from './router/pages';
+import IndexView from './view/main/index/indexM';
+import ProductView from './view/main/product/product';
+import NOTFoundView from './view/main/not-found/not-found';
 
 export default class App {
   constructor() {
-    this.router = new Router();
+    this.header = null;
+    this.main = null;
+    const routes = this.createRoutes();
+    this.router = new Router(routes);
     this.createView();
   }
 
   createView() {
-    const main = new MainView();
-    const header = new HeaderView(this.router);
+    this.header = new HeaderView(this.router);
+    this.main = new MainView();
     const footer = new FooterView();
 
-    document.body.append(header.getHtmlElement(), main.getHtmlElement(), footer.getHtmlElement());
+    document.body.append(this.header.getHtmlElement(), this.main.getHtmlElement(), footer.getHtmlElement());
   }
 
   /**
@@ -26,20 +32,43 @@ export default class App {
     return [
       {
         path: '',
-        callback: () => {},
+        callback: () => {
+          this.setContent(Pages.INDEX, new IndexView());
+        },
       },
       {
         path: `${Pages.INDEX}`,
-        callback: () => {},
+        callback: () => {
+          this.setContent(Pages.INDEX, new IndexView());
+        },
+      },
+      {
+        path: `${Pages.PRODUCT}/${ID_SELECTOR}`,
+        callback: (id) => {
+          this.setContent(Pages.PRODUCT, new ProductView(id));
+        },
       },
       {
         path: `${Pages.PRODUCT}`,
-        callback: () => {},
+        callback: () => {
+          this.setContent(Pages.PRODUCT, new ProductView());
+        },
       },
       {
         path: `${Pages.NOT_FOUND}`,
-        callback: () => {},
+        callback: () => {
+          this.setContent(Pages.NOT_FOUND, new NOTFoundView());
+        },
       },
     ];
+  }
+
+  /**
+ * @param {string} pageName
+ * @param {import('./view/view').default} view
+ */
+  setContent(pageName, view) {
+    this.header.setSelectedItem(pageName);
+    this.main.setContent(view);
   }
 }
