@@ -1,4 +1,4 @@
-import { Pages } from './pages';
+import { ID_SELECTOR, Pages } from './pages';
 
 /**
  * @typedef {{path: string, callback: function}} Route
@@ -17,13 +17,13 @@ export default class Router {
    */
   navigate(url) {
     const request = this.parseurl(url);
-    const pathForFind = request.resource === '' ? request.path : `${request.path}/${request.resource}`;
+    const pathForFind = request.resource === '' ? request.path : `${request.path}/${ID_SELECTOR}`;
     const route = this.routes.find((item) => item.path === pathForFind);
     if (!route) {
       this.redirectToNotFoundPage();
       return;
     }
-    route.callback();
+    route.callback(request.resource);
   }
 
   /**

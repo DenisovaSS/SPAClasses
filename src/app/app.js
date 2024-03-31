@@ -12,8 +12,10 @@ export default class App {
   constructor() {
     this.header = null;
     this.main = null;
+
     const routes = this.createRoutes();
     this.router = new Router(routes);
+
     this.createView();
   }
 
@@ -45,13 +47,13 @@ export default class App {
       {
         path: `${Pages.PRODUCT}/${ID_SELECTOR}`,
         callback: (id) => {
-          this.setContent(Pages.PRODUCT, new ProductView(id));
+          this.setContent(Pages.PRODUCT, new ProductView(this.router, id));
         },
       },
       {
         path: `${Pages.PRODUCT}`,
         callback: () => {
-          this.setContent(Pages.PRODUCT, new ProductView());
+          this.setContent(Pages.PRODUCT, new ProductView(this.router, ''));
         },
       },
       {

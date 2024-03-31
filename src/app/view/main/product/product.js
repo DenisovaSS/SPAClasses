@@ -9,10 +9,10 @@ const cssClasses = {
 };
 export default class ProductView extends View {
   /**
-   *
+   *@param {import('../../../router/router').default} router
    * @param {string} id
    */
-  constructor(id = '') {
+  constructor(router, id = '') {
     /**
      * @type {import('../../view').ViewParams}
      */
@@ -22,57 +22,32 @@ export default class ProductView extends View {
 
     };
     super(params);
-    this.showAllCard();
+    // this.showAllCard();
 
     // this.configureView();
-  }
-
-  // configureView() {
-  //   cardsInfo.forEach((card) => {
-  //     const cardView = new CardView(card);
-  //     this.elementCreator.addInnerElement(cardView.getHtmlElement());
-  //   });
-  // }
-  /**
-     * @param {import('../../../../data/cards').CardInfo} card
-     * @returns {CardView}
-     */
-  createSmallCardsToView(card) {
-    const smallCardComponent = new CardView(card);
-    const callbackMoreInfo = () => this.showLargeCard(card);
-    smallCardComponent.setCallback(callbackMoreInfo);
-    return smallCardComponent;
+    if (id) { this.showLargeCard(router, id); } else { this.showAllCard(router); }
   }
 
   /**
-     * @param {import('../../../../data/cards').CardInfo} card
+     *  @param {import('../../../router/router').default} router
      * @returns {CardView}
      */
-  createLargeCardToView(card) {
-    const largeCardComponent = new CardDetailView(card);
-    const callbackToProduct = () => this.showAllCard();
-    largeCardComponent.setCallback(callbackToProduct);
-    return largeCardComponent;
-  }
 
-  showAllCard() {
-    this.clearView();
+  showAllCard(router) {
     cardsInfo.forEach((card) => {
-      const smallCardComponent = this.createSmallCardsToView(card);
+      const smallCardComponent = new CardView(card, router);
       this.elementCreator.addInnerElement(smallCardComponent.getHtmlElement());
     });
   }
 
-  showLargeCard(card) {
-    this.clearView();
-    const largeCard = this.createLargeCardToView(card);
-    this.elementCreator.addInnerElement(largeCard.getHtmlElement());
-  }
-
-  clearView() {
-    const htmlElement = this.elementCreator.getElement();
-    while (htmlElement.firstElementChild) {
-      htmlElement.firstElementChild.remove();
-    }
+  /**
+ *
+ * @param {string} id
+ *  @param {import('../../../router/router').default} router
+ */
+  showLargeCard(router, id) {
+    const selectCard = cardsInfo.find((card) => card.id === id);
+    const largeCardComponent = new CardDetailView(selectCard, router);
+    this.elementCreator.addInnerElement(largeCardComponent.getHtmlElement());
   }
 }
