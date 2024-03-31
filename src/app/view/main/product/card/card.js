@@ -1,6 +1,7 @@
 import './card.css';
 import View from '../../../view';
 import ElementCreator from '../../../../util/element-creator';
+import { Pages } from '../../../../router/pages';
 
 const CssClasses = {
   CONTAINER: 'card',
@@ -12,8 +13,9 @@ export default class CardView extends View {
   /**
      *
      * @param {import('../../../../../data/cards').CardInfo} card
+     * @param {import('../../../../router/router').default} router
      */
-  constructor(card) {
+  constructor(card, router) {
     /**
      * @type {import('../../../view').ViewParams}
      */
@@ -23,8 +25,8 @@ export default class CardView extends View {
 
     };
     super(params);
-    this.callback = null;
     this.card = card;
+    this.router = router;
     this.configureView();
   }
 
@@ -39,29 +41,24 @@ export default class CardView extends View {
       callback: null,
     };
     const labelCreator = new ElementCreator(paramsLabel);
-
+    this.elementCreator.addInnerElement(labelCreator);
     const paramsButton = {
       tag: 'button',
       classNames: [CssClasses.BUTTON],
       textContent: CARD_TEXT_MORE,
-      callback: this.buttonClickHandler.bind(this),
+      callback: this.buttonClickHandler.bind(this, `${Pages.PRODUCT}/${this.card.id}`),
     };
     const buttonCreator = new ElementCreator(paramsButton);
-    this.elementCreator.addInnerElement(labelCreator);
+
     this.elementCreator.addInnerElement(buttonCreator);
   }
 
   /**
-     * @param {function} callback
-     */
-  setCallback(callback) {
-    if (typeof callback === 'function') {
-      this.callback = callback;
-    }
-  }
-
-  buttonClickHandler() {
-    this.callback();
+ *
+ * @param {string} path
+ */
+  buttonClickHandler(path) {
+    this.router.navigate(path);
   }
 
   getCardInfo() {
