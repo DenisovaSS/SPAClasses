@@ -10,6 +10,12 @@ export default class Router {
  */
   constructor(routes) {
     this.routes = routes;
+    document.addEventListener('DOMContentLoaded', () => {
+      const path = this.getCurrentPath();
+      this.navigate(path);
+    });
+    window.addEventListener('popstate', this.browserChangeHandler.bind(this));
+    window.addEventListener('hashchange', this.browserChangeHandler.bind(this));
   }
 
   /**
@@ -43,5 +49,18 @@ export default class Router {
     if (notFoundPage) {
       this.navigate(notFoundPage.path);
     }
+  }
+
+  browserChangeHandler() {
+    const path = this.getCurrentPath();
+    this.navigate(path);
+  }
+
+  /**
+   * @returns {string}
+   */
+  getCurrentPath() {
+    if (window.location.hash) { return window.location.hash.slice(1); }
+    return window.location.pathname.slice(1);
   }
 }

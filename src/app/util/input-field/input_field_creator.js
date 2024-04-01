@@ -26,16 +26,24 @@ export default class InputFieldCreator extends ElementCreator {
   }
 
   /**
+ *
+ * @param {string} value
+ */
+  setValue(value) {
+    this.inputElement.value = value;
+  }
+
+  /**
      * @param {string} text
      */
-  setTextContent(text) {
-    this.element.textContent = text;
+  setTextContent(text = '') {
+    this.labelElement.textContent = text;
   }
 
   /**
      * @param {function} callback
      */
-  setCallback(callback) {
+  setCallback(callback = null) {
     if (typeof callback === 'function') {
       this.element.addEventListener('keyup', (event) => callback(event));
     }
