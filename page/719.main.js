@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkspaclasses=self.webpackChunkspaclasses||[]).push([[719],{719:function(e,s,t){t.d(s,{default:function(){return a}});var n=t(647);class a extends n.A{constructor(){super({tag:"section",classNames:["not-found"]}),this.configureView()}configureView(){this.elementCreator.setTextContent("Error. Page not found")}}}}]);
