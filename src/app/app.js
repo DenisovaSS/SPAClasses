@@ -4,16 +4,16 @@ import HeaderView from './view/header/header';
 import MainView from './view/main/main';
 import Router from './router/router';
 import { Pages, ID_SELECTOR } from './router/pages';
-import IndexView from './view/main/index/indexM';
-import ProductView from './view/main/product/product';
-import NOTFoundView from './view/main/not-found/not-found';
+
+import State from './state/state';
 
 export default class App {
   constructor() {
     this.header = null;
     this.main = null;
 
-    const routes = this.createRoutes();
+    const state = new State();
+    const routes = this.createRoutes(state);
     this.router = new Router(routes);
 
     this.createView();
@@ -28,37 +28,43 @@ export default class App {
   }
 
   /**
+   * @param {import('./state/state').default} state
  * @returns {Array<import('./router/router').Route>}
  */
-  createRoutes() {
+  createRoutes(state) {
     return [
       {
         path: '',
-        callback: () => {
-          this.setContent(Pages.INDEX, new IndexView());
+        callback: async () => {
+          const { default: IndexView } = await import('./view/main/index/indexM');
+          this.setContent(Pages.INDEX, new IndexView(state));
         },
       },
       {
         path: `${Pages.INDEX}`,
-        callback: () => {
-          this.setContent(Pages.INDEX, new IndexView());
+        callback: async () => {
+          const { default: IndexView } = await import('./view/main/index/indexM');
+          this.setContent(Pages.INDEX, new IndexView(state));
         },
       },
       {
         path: `${Pages.PRODUCT}/${ID_SELECTOR}`,
-        callback: (id) => {
+        callback: async (id) => {
+          const { default: ProductView } = await import('./view/main/product/product');
           this.setContent(Pages.PRODUCT, new ProductView(this.router, id));
         },
       },
       {
         path: `${Pages.PRODUCT}`,
-        callback: () => {
+        callback: async () => {
+          const { default: ProductView } = await import('./view/main/product/product');
           this.setContent(Pages.PRODUCT, new ProductView(this.router, ''));
         },
       },
       {
         path: `${Pages.NOT_FOUND}`,
-        callback: () => {
+        callback: async () => {
+          const { default: NOTFoundView } = await import('./view/main/not-found/not-found');
           this.setContent(Pages.NOT_FOUND, new NOTFoundView());
         },
       },

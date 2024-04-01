@@ -8,7 +8,11 @@ const cssClasses = {
 const FIELD_TEXT_ONE = 'Поле для ввода 1';
 const FIELD_TEXT_TWO = 'Поле для ввода 2';
 export default class IndexView extends View {
-  constructor() {
+  /**
+   *
+   * @param {import('../../../state/state').default} state
+   */
+  constructor(state) {
     /**
          * @type {import('../../view').ViewParams}
          */
@@ -18,9 +22,7 @@ export default class IndexView extends View {
 
     };
     super(params);
-
-    this.firstField = '';
-    this.secondField = '';
+    this.state = state;
 
     this.configureView();
   }
@@ -30,17 +32,19 @@ export default class IndexView extends View {
       tag: 'input',
       classNames: [],
       textContent: FIELD_TEXT_ONE,
-      callback: (event) => this.keyUPHandler(event, 'firstinput'),
+      callback: (event) => this.keyUPHandler(event, FIELD_TEXT_ONE),
     };
     let inputCreator = new InputFieldCreator(paramsInput);
+    inputCreator.setValue(this.state.getField(FIELD_TEXT_ONE));
     this.elementCreator.addInnerElement(inputCreator.getElement());
     paramsInput = {
       tag: 'input',
       classNames: [],
       textContent: FIELD_TEXT_TWO,
-      callback: (event) => this.keyUPHandler(event, 'secondinput'),
+      callback: (event) => this.keyUPHandler(event, FIELD_TEXT_TWO),
     };
     inputCreator = new InputFieldCreator(paramsInput);
+    inputCreator.setValue(this.state.getField(FIELD_TEXT_TWO));
     this.elementCreator.addInnerElement(inputCreator.getElement());
   }
 
@@ -51,7 +55,7 @@ export default class IndexView extends View {
  */
   keyUPHandler(event, fieldName) {
     if (event.target instanceof HTMLInputElement) {
-      this[fieldName] = event.target.value;
+      this.state.setField(fieldName, event.target.value);
     }
   }
 }
